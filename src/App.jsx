@@ -1,11 +1,21 @@
 import React from "react";
-import { Header } from "./components/index.js";
+import { Routes, Route } from "react-router-dom";
+import { Header, MainContainer, CreateContainer } from "./components/index.js";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
   return (
-    <div className="w-screen h-auto flex flex-col">
-      <Header />
-    </div>
+    <AnimatePresence>
+      <div className="w-screen h-auto flex flex-col bg-primary">
+        <Header />
+        <main className="mt-24 p-8 w-full">
+          <Routes>
+            <Route path="/" element={<MainContainer />} />
+            <Route path="/CreateItemS" element={<CreateContainer />} />
+          </Routes>
+        </main>
+      </div>
+    </AnimatePresence>
   );
 }
 
