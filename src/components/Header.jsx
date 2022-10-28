@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { BsCartFill } from 'react-icons/bs';
+import { MdAdd, MdLogout } from 'react-icons/md';
 import Logo from '../img/logo.png';
 import Avatar from '../img/avatar.png';
 import { motion } from 'framer-motion';
@@ -18,12 +19,17 @@ const Header = () => {
 
     const [{ user }, dispatch] = useStateValue();
 
+    // const [isMenu, setIsMenu] = useState(false);
+
     const login = async () => {
-        const { user: { refreshToken, providerData } } = await signInWithPopup(firebaseAuth, provider);
-        dispatch({
-            type: actionType.SET_USER,
-            user: providerData[0],
-        })
+        if (!user) {
+            const { user: { refreshToken, providerData } } = await signInWithPopup(firebaseAuth, provider);
+            dispatch({
+                type: actionType.SET_USER,
+                user: providerData[0],
+            });
+            localStorage.setItem('user', JSON.stringify(providerData[0]))
+        }
     };
 
 
@@ -45,7 +51,8 @@ const Header = () => {
                         <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer '>Services</li>
                     </ul>
                     <div className='relative flex items-center justify-center '>
-                        <BsCartFill className='text-textColor text-2xl cursor-pointer ' />
+                        <BsCartFill className='text-textColor text-2xl cursor-pointer hover:text-headingColor ' />
+
                         <div className='absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center'>
                             <p className='text-xs text-white font-semibold'>2</p>
                         </div>
@@ -56,6 +63,19 @@ const Header = () => {
                             src={user ? user.photoURL : Avatar}
                             alt="" className='w-10 min-w-[40px] h-10 min-h-[40px] drop-shadow-xl cursor-pointer rounded-full'
                             onClick={login} />
+                        {isMenu && (
+                            <div className='w-48 bg-primary shadow-xl rounded-md absolute flex flex-col top-12 right-0 '>
+                                {user && user.email === "vedantbhavsar.a10@gmail.com" && (
+                                    <Link to={createItems}>
+                                        <p className='px-4 py-2 bg-primary hover:rounded-t-md cursor-pointer hover:bg-slate-200 flex items-center'>
+                                            <MdAdd className='mr-2' />New Items</p>
+                                    </Link>
+                                )}
+                                <hr />
+                                <p className='px-4 py-2 bg-primary hover:rounded-b-md cursor-pointer hover:bg-slate-200 flex items-center'><MdLogout className='mr-2' />Logout</p>
+                            </div>
+                        )
+                        }
                     </div>
                 </div>
             </div>
