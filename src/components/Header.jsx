@@ -8,15 +8,22 @@ import { motion } from 'framer-motion';
 
 import { getAuth, getRedirectResult, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from '../firebase.config';
+import { actionType } from '../context/reducer';
+import { useStateValue } from '../context/Stateprovider'
 
 
 const Header = () => {
     const firebaseAuth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
+    const [{ user }, dispatch] = useStateValue();
+
     const login = async () => {
-        const response = await signInWithPopup(firebaseAuth, provider);
-        console.log(response);
+        const { user: { refreshToken, providerData } } = await signInWithPopup(firebaseAuth, provider);
+        dispatch({
+            type: actionType.SET_USER,
+            user: providerData[0],
+        })
     };
 
 
@@ -46,8 +53,8 @@ const Header = () => {
                     <div className='relative'>
                         <motion.img
                             whileTap={{ scale: 0.93 }}
-                            src={Avatar}
-                            alt="" className='w-10 min-w-[40px] h-10 min-h-[40px] drop-shadow-xl cursor-pointer'
+                            src={user ? user.photoURL : Avatar}
+                            alt="" className='w-10 min-w-[40px] h-10 min-h-[40px] drop-shadow-xl cursor-pointer rounded-full'
                             onClick={login} />
                     </div>
                 </div>
