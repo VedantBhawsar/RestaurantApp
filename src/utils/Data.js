@@ -3,7 +3,7 @@ import F2 from "../img/f2.png";
 import C3 from "../img/c3.png";
 import Fi1 from "../img/fi1.png";
 
-
+//for push
 export const heroData = [
   {
     id: 1,
